@@ -1,5 +1,7 @@
 package `fun`.shdf.mywanandroid.base
 
+import `fun`.shdf.mywanandroid.pojo.Article
+import `fun`.shdf.mywanandroid.pojo.Data
 import `fun`.shdf.mywanandroid.pojo.ResultBean
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
@@ -10,7 +12,7 @@ Created by shdf on 2018/7/19.
 wechat：zcm656025633
 exp：
  **/
-class MyAdapter(var datas: List<ResultBean>) : RecyclerView.Adapter<MyViewHolder>(){
+class MyAdapter(var datas: List<Data>) : RecyclerView.Adapter<MyViewHolder>(){
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MyViewHolder {
 

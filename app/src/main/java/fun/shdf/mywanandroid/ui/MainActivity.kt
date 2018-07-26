@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     fun getReadDta(){
         readViewModel = ViewModelProviders.of(this).get(ReadViewModel::class.java)
         readViewModel.getReadData().observe(this, Observer {
-            tv.setText(""+it?.error)
+            tv.setText(""+it?.datas)
 
         })
     }

@@ -2,6 +2,7 @@ package `fun`.shdf.mywanandroid.api
 
 import `fun`.shdf.mywanandroid.App
 import `fun`.shdf.mywanandroid.util.NetUtil
+import android.content.Context
 import android.util.Log
 import okhttp3.Cache
 import okhttp3.CacheControl

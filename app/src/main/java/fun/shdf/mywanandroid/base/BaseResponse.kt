@@ -9,8 +9,9 @@ code-author: by shdf
 coder-wechat: zcm656025633
  **/
 data class BaseResponse<T>(
-        var code: Int,// code = 0 表示请求成功
+        var errorCode: Int,// code = 0 表示请求成功
+        @SerializedName("data")
         var datas: T,
-        var msg: String) : UnProguard{
-        val isOkStaus = code == 0
+        var errorMsg: String) : UnProguard{
+        val isOkStaus = errorCode == 0
 }

@@ -79,7 +79,7 @@ class NetUtil {
          */
         fun isNetworkAvailable(): Boolean {
             var netstate = false
-            val connectivity = App().applicationContext
+            val connectivity = App.getApplicationContext()
                     .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (connectivity != null) {
 

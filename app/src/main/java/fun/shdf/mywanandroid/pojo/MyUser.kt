@@ -1,2 +1,2 @@
 package `fun`.shdf.mywanandroid.pojo
-data class MyUser(var name: String,var age: Int)
+data class MyUser(val name: String,val age: Int)
