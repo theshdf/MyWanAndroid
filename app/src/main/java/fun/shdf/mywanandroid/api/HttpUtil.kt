@@ -4,6 +4,7 @@ import `fun`.shdf.mywanandroid.App
 import `fun`.shdf.mywanandroid.util.NetUtil
 import android.content.Context
 import android.util.Log
+import com.orhanobut.logger.Logger
 import okhttp3.Cache
 import okhttp3.CacheControl
 import okhttp3.Interceptor
@@ -65,7 +66,7 @@ class HttpUtil private constructor() {
                 //获得返回的数据
                 val buffer = source.buffer()
                 //使用前clone()下，避免直接消耗
-                Log.d("http-json:", buffer.clone().readString(Charset.forName("UTF-8")))
+                Logger.json(buffer.clone().readString(Charset.forName("UTF-8")))
                 if (NetUtil.isNetworkAvailable()) {
                     val maxAge = 0 // read from cache
                     originalResponse.newBuilder()
@@ -80,7 +81,7 @@ class HttpUtil private constructor() {
                             .build()
                 }
             }).addInterceptor(HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
-                Log.d("http-interceptor:", it)
+                Logger.d(it)
             }).setLevel(HttpLoggingInterceptor.Level.BASIC))
                     .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(TIMEOUT, TimeUnit.SECONDS)

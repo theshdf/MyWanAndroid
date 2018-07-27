@@ -1,12 +1,27 @@
 package `fun`.shdf.mywanandroid.base
 
+import `fun`.shdf.mywanandroid.R
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.home_item.view.*
+import org.w3c.dom.Text
 
 /**
 Created by shdf on 2018/7/19.
 wechat：zcm656025633
 exp：
  **/
-class MyViewHolder(var view: TextView) : RecyclerView.ViewHolder(view)
+class MyViewHolder(var view: View)
+    : RecyclerView.ViewHolder(view){
+    var title: TextView
+    var author: TextView
+    var date: TextView
+    init {
+        title = view.tv_title
+        author = view.tv_author
+        date = view.tv_date
+    }
+}
 
