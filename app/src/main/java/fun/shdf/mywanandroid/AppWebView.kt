@@ -18,10 +18,10 @@ code-author: by shdf
 coder-wechat: zcm656025633
  **/
 class AppWebView : BaseActivity(){
+    override fun initData() {
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.webview)
+    override fun initView() {
         val url: String = intent.getStringExtra("url")
         webview.loadUrl(url)
         webview.webChromeClient = webChromeClient
@@ -40,6 +40,13 @@ class AppWebView : BaseActivity(){
         //支持屏幕缩放
         webSettings.setSupportZoom(true)
         webSettings.builtInZoomControls = true
+    }
+
+    override fun initListener() {
+    }
+
+    override fun getLayoutId(): Int {
+        return R.layout.webview
     }
 
     //WebViewClient主要帮助WebView处理各种通知、请求事件

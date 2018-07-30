@@ -12,14 +12,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.net.ConnectException
 
-class ReadViewModel : ViewModel(){
+class HomeViewModel : ViewModel(){
     lateinit var readBean: MutableLiveData<Article>
-    fun getReadData(): LiveData<Article>{
+    fun getReadData(page: Int): LiveData<Article>{
         readBean = MutableLiveData()
         //todo  从服务起获取数据
         HttpUtil.getInstance().
                 getApiService()
-                .getArticle(1)
+                .getArticle(page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

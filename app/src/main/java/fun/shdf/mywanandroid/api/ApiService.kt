@@ -2,6 +2,7 @@ package `fun`.shdf.mywanandroid.api
 
 import `fun`.shdf.mywanandroid.base.BaseResponse
 import `fun`.shdf.mywanandroid.pojo.Article
+import `fun`.shdf.mywanandroid.pojo.BannerBean
 import `fun`.shdf.mywanandroid.pojo.ReadBean
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -15,4 +16,7 @@ interface ApiService{
     //todo  首页数据接口
     @GET("article/list/{num}/json")
     fun getArticle(@Path("num") num: Int): Observable<BaseResponse<Article>>
+
+    @GET("banner/json")
+    fun getBanner(): Observable<BaseResponse<List<BannerBean>>>
 }

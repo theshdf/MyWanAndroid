@@ -1,12 +1,8 @@
 package `fun`.shdf.mywanandroid.base
-
-import `fun`.shdf.mywanandroid.R
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.home_item.view.*
-import org.w3c.dom.Text
 
 /**
 Created by shdf on 2018/7/19.

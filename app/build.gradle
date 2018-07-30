@@ -60,6 +60,11 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'com.github.nuptboyzhb.lib.uikit:superswiperefreshlayout:1.0.0'
+    implementation 'com.zhy:base-rvadapter:3.0.3'
+    implementation 'com.youth.banner:banner:1.4.10'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'com.github.zyyoona7:EasyPopup:1.1.2'
 }
 repositories {
     mavenCentral()

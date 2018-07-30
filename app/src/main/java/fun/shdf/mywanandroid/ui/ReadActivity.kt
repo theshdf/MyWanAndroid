@@ -2,16 +2,14 @@ package `fun`.shdf.mywanandroid.ui
 
 import `fun`.shdf.mywanandroid.AppWebView
 import `fun`.shdf.mywanandroid.R
-import `fun`.shdf.mywanandroid.api.HttpUtil
 import `fun`.shdf.mywanandroid.base.ItemOnItemClickListener
 import `fun`.shdf.mywanandroid.base.MyAdapter
 import `fun`.shdf.mywanandroid.pojo.Data
 import `fun`.shdf.mywanandroid.view.dialog.HelloWorldDialog
-import `fun`.shdf.mywanandroid.viewmodel.ReadViewModel
+import `fun`.shdf.mywanandroid.viewmodel.HomeViewModel
 import android.app.Dialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
@@ -25,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_read.*
 class ReadActivity : AppCompatActivity(){
 
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var readViewModel: ReadViewModel
+    private lateinit var readViewModel: HomeViewModel
     private lateinit var articles: MutableList<Data>
     private var dd: Dialog? = null
     private lateinit var adapter: MyAdapter
@@ -52,7 +50,7 @@ class ReadActivity : AppCompatActivity(){
                 startActivity(intent)
             }
         })
-        readViewModel = ViewModelProviders.of(this)[ReadViewModel::class.java]
+        readViewModel = ViewModelProviders.of(this)[HomeViewModel::class.java]
         showDialog()
        // showDialogFragment()
     }
@@ -61,7 +59,7 @@ class ReadActivity : AppCompatActivity(){
      * 获取数据
      */
     fun getResult() {
-        readViewModel.getReadData().observe(this, Observer {
+        readViewModel.getReadData(1).observe(this, Observer {
             articles.clear()
             articles.addAll(it!!.datas)
             recycler.adapter.let { it?.notifyDataSetChanged() }
