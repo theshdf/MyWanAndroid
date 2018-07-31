@@ -61,7 +61,7 @@ class ReadActivity : AppCompatActivity(){
     fun getResult() {
         readViewModel.getReadData(1).observe(this, Observer {
             articles.clear()
-            articles.addAll(it!!.datas)
+            articles.addAll(it!!.datas!!.datas)
             recycler.adapter.let { it?.notifyDataSetChanged() }
         }
         )

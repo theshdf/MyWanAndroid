@@ -1,4 +1,5 @@
 package `fun`.shdf.mywanandroid.ui
+
 import `fun`.shdf.mywanandroid.AppWebView
 import `fun`.shdf.mywanandroid.GlideImageLoader
 import `fun`.shdf.mywanandroid.R
@@ -18,60 +19,48 @@ import com.zhy.adapter.recyclerview.CommonAdapter
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter
 import com.zhy.adapter.recyclerview.base.ViewHolder
 import com.zyyoona7.popup.EasyPopup
-import com.zyyoona7.popup.XGravity
-import com.zyyoona7.popup.YGravity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.home_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : BaseActivity() {
+
     private lateinit var articles: MutableList<Data>
     private lateinit var adapter: CommonAdapter<Data>
     private lateinit var viewModel: HomeViewModel
     private lateinit var bannerViewModel: BannerViewModel
     private var page: Int = 1
     private lateinit var banners: MutableList<String>
-    private lateinit var pop:EasyPopup
+    private lateinit var pop: EasyPopup
+
     override fun initData() {
         articles = mutableListOf()
         banners = mutableListOf()
         viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         bannerViewModel = ViewModelProviders.of(this)[BannerViewModel::class.java]
-        adapter = object: CommonAdapter<Data>(
+        adapter = object : CommonAdapter<Data>(
                 this@MainActivity,
                 home_item,
-                articles)
-        {
+                articles) {
             override fun convert(holder: ViewHolder, t: Data, position: Int) {
                 holder.itemView.tv_title.text = t.title
                 holder.itemView.tv_author.text = t.author
                 holder.itemView.tv_date.text = SimpleDateFormat().format(Date(t.publishTime))
             }
         }
-        bannerViewModel
-                .getBanner()
-                .observe(this,android.arch.lifecycle.Observer {
-                //todo 获取数据
-                    banners.clear()
-                    for(data: BannerBean in it!!){
-                        banners.add(data.imagePath)
-                    }
-                     banner.setImages(banners).setImageLoader(GlideImageLoader()).start()
-        })
-
     }
 
     override fun initView() {
         var llm: LinearLayoutManager = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
         rv.layoutManager = llm
-        rv.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
+        rv.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         rv.adapter = adapter
         ssr.setDefaultCircleProgressColor(Color.RED)
-        pop  =  EasyPopup.create()
+        pop = EasyPopup.create()
                 .setContentView(this, R.layout.head_banner)
-              //  .setAnimationStyle(R.style.RightPopAnim)
+                //  .setAnimationStyle(R.style.RightPopAnim)
                 //是否允许点击PopupWindow之外的地方消失
                 .setFocusAndOutsideEnable(true)
                 //允许背景变暗
@@ -81,7 +70,7 @@ class MainActivity : BaseActivity() {
                 //变暗的背景颜色
                 .setDimColor(Color.GRAY)
                 //指定任意 ViewGroup 背景变暗
-              //  .setDimView(viewGroup)
+                //  .setDimView(viewGroup)
                 .apply()
 
     }
@@ -91,19 +80,18 @@ class MainActivity : BaseActivity() {
         adapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
             override fun onItemLongClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int): Boolean {
 
-            return false
+                return false
             }
 
             override fun onItemClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int) {
                 val url: String = articles.get(position).link
-                // val intent = Intent(this@ReadActivity,AppWebView::class.java)
                 intent.setClass(this@MainActivity, AppWebView::class.java)
-                intent.putExtra("url",url)
+                intent.putExtra("url", url)
                 startActivity(intent)
             }
         })
         //todo 下拉刷新
-        ssr.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener{
+        ssr.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onPullEnable(p0: Boolean) {
             }
 
@@ -111,21 +99,11 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onRefresh() {
-                page = 1
-                viewModel.getReadData(page).observe(this@MainActivity,android.arch.lifecycle.Observer {
-                    if(it == null){
-                        ssr.isRefreshing = false
-                        return@Observer
-                    }
-                    articles.clear()
-                    articles.addAll(it.datas)
-                    adapter.notifyDataSetChanged()
-                    ssr.isRefreshing = false
-                }
-                )
+                getBanner()
+                getArticles(1)
             }
         })
-        ssr.setOnPushLoadMoreListener(object : SuperSwipeRefreshLayout.OnPushLoadMoreListener{
+        ssr.setOnPushLoadMoreListener(object : SuperSwipeRefreshLayout.OnPushLoadMoreListener {
             override fun onPushDistance(p0: Int) {
             }
 
@@ -133,26 +111,66 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onLoadMore() {
-                page ++
-                    viewModel.getReadData(page).observe(this@MainActivity,android.arch.lifecycle.Observer {
-                    if(it == null){
-                        ssr.isRefreshing = false
-                        return@Observer
-                    }
-                    articles.addAll(it.datas)
-                    adapter.notifyDataSetChanged()
-                    ssr.setLoadMore(false)
-                }
-                )
+                page++
+                getBanner()
+                getArticles(page)
             }
         })
-        tv_title.setOnClickListener{
-            pop.showAsDropDown(it,YGravity.BELOW,XGravity.CENTER)
-        }
+        /* tv_title.setOnClickListener{
+             pop.showAsDropDown(it,YGravity.BELOW,XGravity.CENTER)
+         }*/
+        ssr.isRefreshing = true
+        getBanner()
+        getArticles(1)
+    }
 
+    //todo 获取banner图
+    fun getBanner(){
+        bannerViewModel
+                .getBanner()
+                .observe(this, android.arch.lifecycle.Observer {
+                    //todo 获取数据
+                    banners.clear()
+                    for (data: BannerBean in it!!) {
+                        banners.add(data.imagePath)
+                    }
+                    banner.setImages(banners).setImageLoader(GlideImageLoader()).start()
+                })
+    }
+
+    //todo 获取文章列表
+    private fun getArticles(page: Int) {
+        if (page == 1) {
+           // viewModel.getReadData(1).observe(this@MainActivity,{res -> res.})
+            viewModel.getReadData(page).observe(this@MainActivity, android.arch.lifecycle.Observer {
+                if (it!!.datas == null) {
+                    ssr.isRefreshing = false
+                }
+                else {
+                    articles.clear()
+                    articles.addAll(it.datas!!.datas)
+                    adapter.notifyDataSetChanged()
+                    ssr.isRefreshing = false
+                }
+            }
+            )
+        } else {
+            viewModel.getReadData(page).observe(this@MainActivity, android.arch.lifecycle.Observer {
+                if (it == null) {
+                    ssr.setLoadMore(false)
+                    return@Observer
+                }
+                articles.addAll(it.datas!!.datas)
+                adapter.notifyDataSetChanged()
+                ssr.setLoadMore(false)
+            }
+            )
+        }
     }
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
     }
+
+
 }
