@@ -5,6 +5,7 @@ import `fun`.shdf.mywanandroid.GlideImageLoader
 import `fun`.shdf.mywanandroid.R
 import `fun`.shdf.mywanandroid.R.layout.home_item
 import `fun`.shdf.mywanandroid.Resource
+import `fun`.shdf.mywanandroid.pojo.Article
 import `fun`.shdf.mywanandroid.pojo.BannerBean
 import `fun`.shdf.mywanandroid.pojo.Data
 import `fun`.shdf.mywanandroid.viewmodel.BannerViewModel
@@ -15,6 +16,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.Toast
 import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout
 import com.zhy.adapter.recyclerview.CommonAdapter
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter
@@ -111,7 +113,6 @@ class MainActivity : BaseActivity() {
 
             override fun onLoadMore() {
                 page++
-                getBanner()
                 getArticles(page)
             }
         })
@@ -139,46 +140,37 @@ class MainActivity : BaseActivity() {
         if (page == 1) {
            // viewModel.getReadData(1).observe(this@MainActivity,{res -> res.})
             viewModel.getReadData(page).observe(this@MainActivity, android.arch.lifecycle.Observer {
-                it!!.handleResource(object : Resource.OnBackHandle{
-                    override fun onHandleLoading() {
-                        
-                    }
-                    override fun onHanleSuccess() {
-                        if(it.data != null){
+                it!!.handleResource(object : Resource.OnBackHandle<Article>{
+                    override fun onHanleSuccess(data: Article) {
+                        if(data != null){
                             articles.clear()
-                            articles.addAll(it.data!!.datas)
+                            articles.addAll(data.datas)
                             adapter.notifyDataSetChanged()
                             ssr.isRefreshing = false
                         }
                     }
-                    override fun onHandleFail() {
+                    override fun onHandleLoading() {
+                        
                     }
-                    override fun onHandleError() {
-                    }
+
                     override fun onHandleComplete() {
-                        ssr.setLoadMore(false)
+                        ssr.isRefreshing = false
                     }
                 })
             }
             )
         } else {
             viewModel.getReadData(page).observe(this@MainActivity, android.arch.lifecycle.Observer {
-                it!!.handleResource(object : Resource.OnBackHandle{
-                    override fun onHandleLoading() {
-                    }
-                    override fun onHanleSuccess() {
-                        if (it.data != null){
-                            articles.addAll(it.data!!.datas)
+                it!!.handleResource(object : Resource.OnBackHandle<Article>{
+                    override fun onHanleSuccess(article: Article) {
+                        if (article != null){
+                            articles.addAll(article.datas)
                             adapter.notifyDataSetChanged()
                             ssr.setLoadMore(false)
                         }
                     }
-                    override fun onHandleFail() {
+                    override fun onHandleLoading() {
                     }
-
-                    override fun onHandleError() {
-                    }
-
                     override fun onHandleComplete() {
                         ssr.setLoadMore(false)
                     }

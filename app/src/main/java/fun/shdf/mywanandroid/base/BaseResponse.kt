@@ -16,7 +16,7 @@ data class BaseResponse<T>(
         var throwable: Throwable?
 
 ) : UnProguard{
-        val isOkStaus = errorCode == 0
+        var isOkStaus = errorCode == 0
 }
 
 
