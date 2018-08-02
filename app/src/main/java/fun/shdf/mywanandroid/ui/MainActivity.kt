@@ -4,6 +4,7 @@ import `fun`.shdf.mywanandroid.AppWebView
 import `fun`.shdf.mywanandroid.GlideImageLoader
 import `fun`.shdf.mywanandroid.R
 import `fun`.shdf.mywanandroid.R.layout.home_item
+import `fun`.shdf.mywanandroid.Resource
 import `fun`.shdf.mywanandroid.pojo.BannerBean
 import `fun`.shdf.mywanandroid.pojo.Data
 import `fun`.shdf.mywanandroid.viewmodel.BannerViewModel
@@ -72,14 +73,12 @@ class MainActivity : BaseActivity() {
                 //指定任意 ViewGroup 背景变暗
                 //  .setDimView(viewGroup)
                 .apply()
-
     }
 
     override fun initListener() {
         adapter.notifyDataSetChanged()
         adapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
             override fun onItemLongClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int): Boolean {
-
                 return false
             }
 
@@ -116,9 +115,6 @@ class MainActivity : BaseActivity() {
                 getArticles(page)
             }
         })
-        /* tv_title.setOnClickListener{
-             pop.showAsDropDown(it,YGravity.BELOW,XGravity.CENTER)
-         }*/
         ssr.isRefreshing = true
         getBanner()
         getArticles(1)
@@ -143,26 +139,50 @@ class MainActivity : BaseActivity() {
         if (page == 1) {
            // viewModel.getReadData(1).observe(this@MainActivity,{res -> res.})
             viewModel.getReadData(page).observe(this@MainActivity, android.arch.lifecycle.Observer {
-                if (it!!.datas == null) {
-                    ssr.isRefreshing = false
-                }
-                else {
-                    articles.clear()
-                    articles.addAll(it.datas!!.datas)
-                    adapter.notifyDataSetChanged()
-                    ssr.isRefreshing = false
-                }
+                it!!.handleResource(object : Resource.OnBackHandle{
+                    override fun onHandleLoading() {
+                        
+                    }
+                    override fun onHanleSuccess() {
+                        if(it.data != null){
+                            articles.clear()
+                            articles.addAll(it.data!!.datas)
+                            adapter.notifyDataSetChanged()
+                            ssr.isRefreshing = false
+                        }
+                    }
+                    override fun onHandleFail() {
+                    }
+                    override fun onHandleError() {
+                    }
+                    override fun onHandleComplete() {
+                        ssr.setLoadMore(false)
+                    }
+                })
             }
             )
         } else {
             viewModel.getReadData(page).observe(this@MainActivity, android.arch.lifecycle.Observer {
-                if (it == null) {
-                    ssr.setLoadMore(false)
-                    return@Observer
-                }
-                articles.addAll(it.datas!!.datas)
-                adapter.notifyDataSetChanged()
-                ssr.setLoadMore(false)
+                it!!.handleResource(object : Resource.OnBackHandle{
+                    override fun onHandleLoading() {
+                    }
+                    override fun onHanleSuccess() {
+                        if (it.data != null){
+                            articles.addAll(it.data!!.datas)
+                            adapter.notifyDataSetChanged()
+                            ssr.setLoadMore(false)
+                        }
+                    }
+                    override fun onHandleFail() {
+                    }
+
+                    override fun onHandleError() {
+                    }
+
+                    override fun onHandleComplete() {
+                        ssr.setLoadMore(false)
+                    }
+                })
             }
             )
         }
@@ -171,6 +191,4 @@ class MainActivity : BaseActivity() {
     override fun getLayoutId(): Int {
         return R.layout.activity_main
     }
-
-
 }

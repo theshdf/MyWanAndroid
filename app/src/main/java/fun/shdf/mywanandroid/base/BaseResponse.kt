@@ -12,7 +12,13 @@ data class BaseResponse<T>(
         var errorCode: Int,// code = 0 表示请求成功
         @SerializedName("data")
         var datas: T?= null,
-        var errorMsg: String?) : UnProguard{
+        var errorMsg: String?,
+        var throwable: Throwable?
+
+) : UnProguard{
         val isOkStaus = errorCode == 0
 }
+
+
+
 
